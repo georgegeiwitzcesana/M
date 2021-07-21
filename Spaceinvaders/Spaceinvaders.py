@@ -1,19 +1,19 @@
 import pgzrun
-
+from random import random
 #player 
 
 player = Actor("aliens")
 player.x = 400 
 player.y = 600 - player.height * 0.5 
 
-speed = 5
+speed = 10
 lasers = [] 
 
 #Spaceship
 spaceships = []
 def add_spaceship():
     spaceship = Actor("spaceship")  
-    spaceship.x = 400
+    spaceship.x = 800 * random()
     spaceship.y = 300# spaceship.height * 0.5
     spaceships.append(spaceship)
 clock.schedule_interval(add_spaceship, 5)
@@ -39,8 +39,16 @@ def update():
     if keyboard.space:
         fire_laser()
 
+    for spaceship in spaceships:
+        spaceship.y += 3
     for laser in lasers:
-        laser.y -= 10
+        laser.y -= 10 
+        for spaceship in spaceships:
+            if laser.x > spaceship.x - spaceship.width * 0.5:
+                if laser.y > spaceship.y - spaceship.height * 0.5:
+                    if laser.x < spaceship.x + spaceship.width * 0.5:
+                        if laser.y < spaceship.y + spaceship.height * 0.5:
+                            spaceships.remove(spaceship)
 
 def draw():
     screen.clear()
